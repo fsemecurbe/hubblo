@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>Premier test hubblo | Hubblash</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="./_observablehq/theme-air,near-midnight,alt,wide.css">
+<link rel="preload" as="style" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&amp;display=swap" crossorigin>
+<link rel="preload" as="style" href="./_observablehq/stdlib/inputs.css">
+<link rel="stylesheet" type="text/css" href="./_observablehq/theme-air,near-midnight,alt,wide.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" crossorigin>
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&amp;display=swap" crossorigin>
+<link rel="stylesheet" type="text/css" href="./_observablehq/stdlib/inputs.css">
+<link rel="modulepreload" href="./_observablehq/client.js">
+<link rel="modulepreload" href="./_observablehq/runtime.js">
+<link rel="modulepreload" href="./_observablehq/stdlib.js">
+<link rel="modulepreload" href="./_observablehq/stdlib/duckdb.js">
+<link rel="modulepreload" href="./_observablehq/stdlib/inputs.js">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.28.0/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/apache-arrow@13.0.0/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/flatbuffers@23.5.26/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/htl@0.3.1/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/isoformat@0.2.1/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/+esm">
+<link rel="modulepreload" href="https://cdn.jsdelivr.net/npm/tslib@2.6.2/+esm">
+<script type="module">
+
+import {define} from "./_observablehq/client.js";
+
+define({id: "d7a50e63", inline: true, inputs: ["Inputs","hubblo","display"], body: async (Inputs,hubblo,display) => {
+display(await(
+Inputs.table(hubblo)
+))
+}});
+
+define({id: "618cc0f2", inputs: ["DuckDBClient"], outputs: ["db"], body: (DuckDBClient) => {
+var db = DuckDBClient.of()
+return {db};
+}});
+
+define({id: "db66dd04", inputs: ["L"], outputs: ["map"], body: (L) => {
+const map = L.map("map")
+  .setView([51.505, -0.09], 13);
+
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png")
+  .addTo(map);
+
+
+
+
+return {map};
+}});
+
+define({id: "2ae703d0", outputs: ["L"], body: async () => {
+const L = await import("https://cdn.jsdelivr.net/npm/leaflet@1.9.4/+esm");
+
+return {L};
+}});
+
+define({id: "e79e5fc1", outputs: ["x","y","rayon"], body: () => {
+var x = 574153.0242929291
+var y = 6278679.902778912
+var rayon=1000 
+return {x,y,rayon};
+}});
+
+define({id: "1ee93f9a", inputs: ["Inputs","hubblo","display"], body: async (Inputs,hubblo,display) => {
+display(await(
+Inputs.table(hubblo)
+))
+}});
+
+define({id: "e8962b3c", inputs: ["db","x","rayon","y"], outputs: ["hubblo"], body: (db,x,rayon,y) => {
+var hubblo = db.sql`select sum(Ind) as Ind,
+        sum(Men_1ind) as Men_1ind, 
+        sum(Men_5ind) as Men_5ind, 
+        sum(Men_prop) as Men_prop, 
+        sum(Men_fmp) as Men_fmp,
+        sum(Ind_snv) as Ind_snv, 
+        sum(Men_surf) as Men_surf, 
+        sum(Men_coll) as Men_coll, 
+        sum(Men_mais) as Men_mais, 
+        sum(Log_av45) as Log_av45, 
+        sum(Log_45_70) as Log_45_70,
+        sum(Log_70_90) as Log_70_90, 
+        sum(Log_ap90) as Log_ap90, 
+        sum(Log_inc) as Log_inc, 
+        sum(Log_soc) as Log_soc, 
+        sum(Ind_0_3) as Ind_0_3, 
+        sum(Ind_4_5) as Ind_4_5,
+        sum(Ind_6_10) as Ind_6_10, 
+        sum(Ind_11_17) as Ind_11_17, 
+        sum(Ind_18_24) as Ind_18_24, 
+        sum(Ind_25_39) as Ind_25_39, 
+        sum(Ind_40_54) as Ind_40_54,
+        sum(Ind_55_64) as Ind_55_64, 
+        sum(Ind_65_79) as Ind_65_79, 
+        sum(Ind_80p) as Ind_80p, 
+        sum(Ind_inc) as Ind_inc,  
+        sum(Men_pauv) as Men_pauv,
+        sum(Men) as Men 
+
+
+from 
+read_parquet("https://minio.lab.sspcloud.fr/h529p3/data/Filosofi2017_carreaux_200m_met.parquet") 
+where (x>${x}-${rayon})
+and (x<${x}+${rayon})
+and (y>(${y}-${rayon})) 
+and (y<${y}+${rayon});`
+return {hubblo};
+}});
+
+</script>
+<input id="observablehq-sidebar-toggle" type="checkbox" title="Toggle sidebar">
+<label id="observablehq-sidebar-backdrop" for="observablehq-sidebar-toggle"></label>
+<nav id="observablehq-sidebar">
+  <ol>
+    <label id="observablehq-sidebar-close" for="observablehq-sidebar-toggle"></label>
+    <li class="observablehq-link"><a href="./">Hubblash</a></li>
+  </ol>
+  <ol>
+    <li class="observablehq-link observablehq-link-active"><a href="./example-dashboard">Premier test hubblo</a></li>
+    <li class="observablehq-link"><a href="./example-report">Example report</a></li>
+  </ol>
+</nav>
+<script>{Object.assign(document.createElement("a"),{href:""}).password&&location.replace(location.href);const e=document.querySelector("#observablehq-sidebar"),o=document.querySelector("#observablehq-sidebar-toggle"),r=sessionStorage.getItem("observablehq-sidebar");r?o.checked=r==="true":o.indeterminate=!0;for(const t of document.querySelectorAll("#observablehq-sidebar summary")){const s=t.parentElement;switch(sessionStorage.getItem(`observablehq-sidebar:${t.textContent}`)){case"true":s.open=!0;break;case"false":s.classList.contains("observablehq-section-active")||(s.open=!1);break}}addEventListener("beforeunload",()=>sessionStorage.setItem("observablehq-sidebar-scrolly",`${e.scrollTop}`));const a=sessionStorage.getItem("observablehq-sidebar-scrolly");a!=null&&(e.style.cssText="overflow: hidden;",e.scrollTop=+a,e.style.cssText="");}</script>
+<div id="observablehq-center">
+<main id="observablehq-main" class="observablehq">
+<h1 id="premier-test-de-hubblo" tabindex="-1"><a class="observablehq-header-anchor" href="#premier-test-de-hubblo">Premier test de Hubblo</a></h1>
+<span><!-- Load and transform the data -->
+</span><div class="grid grid-cols-2">
+  <div class="card" id="map">
+    <h2>Lorem ipsum</h2>
+    <p>Id ornare arcu odio ut sem nulla pharetra. Aliquet lectus proin nibh nisl condimentum id venenatis a. Feugiat sed lectus vestibulum mattis ullamcorper velit. Aliquet nec ullamcorper sit amet. Sit amet tellus cras adipiscing. Condimentum id venenatis a condimentum vitae. Semper eget duis at tellus. Ut faucibus pulvinar elementum integer enim.</p>
+    <p>Et malesuada fames ac turpis. Integer vitae justo eget magna fermentum iaculis eu non diam. Aliquet risus feugiat in ante metus dictum at. Consectetur purus ut faucibus pulvinar.</p>
+  </div>
+  <div class="card" style="padding: 0;">
+    <span id="cell-d7a50e63" class="observablehq--loading"></span>
+  </div>
+</div>
+<div id="cell-618cc0f2" class="observablehq observablehq--block"></div>
+<div id="cell-db66dd04" class="observablehq observablehq--block"></div>
+<div id="cell-2ae703d0" class="observablehq observablehq--block"></div>
+<div id="cell-e79e5fc1" class="observablehq observablehq--block"></div>
+<div id="cell-1ee93f9a" class="observablehq observablehq--block observablehq--loading"></div>
+<div id="cell-e8962b3c" class="observablehq observablehq--block"></div>
+</main>
+<footer id="observablehq-footer">
+<nav><a rel="prev" href="./"><span>Hubblash</span></a><a rel="next" href="./example-report"><span>Example report</span></a></nav>
+<div>Built with <a href="https://observablehq.com/" target="_blank">Observable</a> on <a title="2024-02-20T16:23:01">Feb 20, 2024</a>.</div>
+</footer>
+</div>
