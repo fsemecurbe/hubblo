@@ -1,0 +1,4 @@
+fastapi[all]
+duckdb
+pandas
+geopandas
