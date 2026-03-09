@@ -16,8 +16,11 @@ vars = [
 'ind', 'men', 'men_pauv', 'men_1ind', 'men_5ind',
 'men_prop', 'men_fmp', 'ind_snv', 'men_surf', 'men_coll', 'men_mais',
 'log_av45', 'log_45_70', 'log_70_90', 'log_ap90', 'log_inc', 'log_soc',
-…eight) as {v}" for v in vars])
+'ind_0_3', 'ind_4_5', 'ind_6_10', 'ind_11_17', 'ind_18_24', 'ind_25_39',
+'ind_40_54', 'ind_55_64', 'ind_65_79', 'ind_80p', 'ind_inc'
+]
 
+agg = ",\n".join([f"sum({v}*weight) as {v}" for v in vars])
 
 app = FastAPI()
 
