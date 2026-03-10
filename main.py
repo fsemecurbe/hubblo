@@ -7,7 +7,7 @@ duckdb.sql('''
 install spatial;
 load spatial;''')
 
-duckdb.execute('''SET memory_limit = '1GB';''')
+duckdb.execute('''SET memory_limit = '.5GB';''')
 
 
 
