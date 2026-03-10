@@ -1,16 +1,7 @@
 from fastapi import FastAPI
 import pandas as pd 
 import duckdb
-
 from fastapi.middleware.cors import CORSMiddleware
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 
 duckdb.sql('''
 install spatial;
@@ -31,6 +22,13 @@ vars = [
 agg = ",\n".join([f"sum({v}*weight) as {v}" for v in vars])
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 
 
