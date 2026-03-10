@@ -1,7 +1,15 @@
 from fastapi import FastAPI
 import pandas as pd 
-import geopandas as gpd 
 import duckdb
+
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 duckdb.sql('''
