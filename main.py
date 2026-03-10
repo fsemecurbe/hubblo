@@ -7,6 +7,8 @@ duckdb.sql('''
 install spatial;
 load spatial;''')
 
+duckdb.execute('''SET memory_limit = '1GB';''')
+
 duckdb.sql('''
 CREATE OR REPLACE VIEW filosofi AS from  read_parquet('https://www.data.gouv.fr/api/1/datasets/r/55432374-a91d-43d0-923d-4514dc3eb951');
 ''')
