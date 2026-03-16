@@ -21,7 +21,7 @@ from read_parquet('https://www.data.gouv.fr/api/1/datasets/r/55432374-a91d-43d0-
 
 
 duckdb.sql('''
-CREATE INDEX my_idx ON filosofi USING RTREE (geom);
+CREATE INDEX my_idx ON filosofi USING RTREE (geometry);
 ''')
 
 vars = [
