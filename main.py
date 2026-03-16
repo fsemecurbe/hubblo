@@ -19,7 +19,7 @@ select *
 from read_parquet('https://www.data.gouv.fr/api/1/datasets/r/55432374-a91d-43d0-923d-4514dc3eb951');
 
 
-CREATE INDEX my_idx ON filosofi USING RTREE (geometry);
+CREATE or replace INDEX my_idx ON filosofi USING RTREE (geometry);
 ''')
 
 vars = [
