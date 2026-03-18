@@ -15,13 +15,16 @@ duckdb.execute('''SET memory_limit = '.5GB';''')
 
 duckdb.sql('''
 CREATE OR REPLACE TABLE filosofi AS 
-select * , geometry as geom
+select * 
 from read_parquet('https://www.data.gouv.fr/api/1/datasets/r/55432374-a91d-43d0-923d-4514dc3eb951');
 ''')
 
 
 duckdb.sql('''
-CREATE INDEX my_idx ON filosofi USING RTREE (geom);
+ALTER TABLE filosofi
+ALTER COLUMN geometry TYPE GEOMETRY USING ST_GeomFromText(ST_AsText(geometry));           
+
+CREATE INDEX my_idx ON filosofi USING RTREE (geometry);
 ''')
 
 vars = [
