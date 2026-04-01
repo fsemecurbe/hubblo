@@ -44,19 +44,19 @@ vars = ['ind', 'men', 'men_pauv', 'men_1ind', 'men_5ind', 'men_prop', 'men_fmp',
 agg = ",\n".join([f"COALESCE(sum({v}*weight), 0) as {v}" for v in vars])
 agg_commune = ",\n".join([f"COALESCE({v},0) as {v}" for v in vars])
 
-query = '''     
+query = '''       
 WITH intersected AS (
     SELECT *, st_area(st_intersection(geometry, {})) / st_area(geometry) as weight
     from filosofi
     where ST_Intersects(geometry, {})
 )
 SELECT
-    'hubblo' AS unit, {}
+    'hubblo' AS unit, {}, ST_AsText({}) as geometry
 FROM intersected
 
 UNION 
 
-select concat(code, '-', libelle)as unit , {}  
+select concat(code, '-', libelle)as unit , {}  , ST_AsText(geometry)  as geometry
 from commune 
 where   ST_Intersects(geometry, ST_centroid({}))   
 '''
@@ -64,9 +64,7 @@ where   ST_Intersects(geometry, ST_centroid({}))
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
-
 @app.get("/filosofi")
 def filosofi_stats(x: float = 3756295, y: float = 2889313, radius: float = 1000):
     hubblo = f"st_buffer(ST_Point({x}, {y}), {radius})"
-    return {"message": duckdb.sql(query.format(hubblo, hubblo, agg, agg_commune, hubblo)).df()}
-
+    return {"message": duckdb.sql(query.format(hubblo, hubblo, agg, hubblo, agg_commune, hubblo)).df()}
