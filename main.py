@@ -10,6 +10,8 @@ def init_duckdb():
         load spatial;
     ''')
 
+    duckdb.execute('''SET geometry_always_xy = true''')
+
     duckdb.execute('''SET memory_limit = '.5GB';''')
 
     duckdb.sql('''
@@ -51,12 +53,12 @@ WITH intersected AS (
     where ST_Intersects(geometry, {})
 )
 SELECT
-    'hubblo' AS unit, {}, ST_AsText({}) as geometry
+    'hubblo' AS unit, {}, ST_AsText(ST_Transform({}, 'EPSG:3035', 'EPSG:{}')) as geometry
 FROM intersected
 
 UNION 
 
-select concat(code, '-', libelle)as unit , {}  , ST_AsText(geometry)  as geometry
+select concat(code, '-', libelle)as unit , {}  , ST_AsText(ST_Transform(geometry, 'EPSG:3035', 'EPSG:{}'))  as geometry
 from commune 
 where   ST_Intersects(geometry, ST_centroid({}))   
 '''
@@ -65,6 +67,6 @@ app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 @app.get("/filosofi")
-def filosofi_stats(x: float = 3756295, y: float = 2889313, radius: float = 1000):
-    hubblo = f"st_buffer(ST_Point({x}, {y}), {radius})"
-    return {"message": duckdb.sql(query.format(hubblo, hubblo, agg, hubblo, agg_commune, hubblo)).df()}
+def filosofi_stats(x: float = 1.44193756295, y: float =  43.596, radius: float = 1000, epsg: int = 4326):
+    hubblo = f"(st_buffer(ST_Transform(ST_Point({x}, {y}),'EPSG:{epsg}', 'EPSG:3035'), {radius}))"
+    return {"message": duckdb.sql(query.format(hubblo, hubblo, agg, hubblo, epsg, agg_commune, epsg, hubblo)).df()}
