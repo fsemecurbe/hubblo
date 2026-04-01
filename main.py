@@ -53,12 +53,12 @@ WITH intersected AS (
     where ST_Intersects(geometry, {})
 )
 SELECT
-    'hubblo' AS unit, {}, ST_AsText(ST_Transform({}, 'EPSG:3035', 'EPSG:{}')) as geometry
+    'hubblo' AS unit, {}, ST_AsGeoJSON(ST_Transform({}, 'EPSG:3035', 'EPSG:{}')) as geometry
 FROM intersected
 
 UNION 
 
-select concat(code, '-', libelle)as unit , {}  , ST_AsText(ST_Transform(geometry, 'EPSG:3035', 'EPSG:{}'))  as geometry
+select concat(code, '-', libelle)as unit , {}, ST_AsGeoJSON(ST_Transform(geometry, 'EPSG:3035', 'EPSG:{}'))  as geometry
 from commune 
 where   ST_Intersects(geometry, ST_centroid({}))   
 '''
