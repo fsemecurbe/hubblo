@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 import pandas as pd 
 import duckdb
 from fastapi.middleware.cors import CORSMiddleware
@@ -67,6 +67,6 @@ app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
 @app.get("/filosofi")
-def filosofi_stats(x: float = 1.44193756295, y: float =  43.596, radius: float = 1000, epsg: int = 4326):
+def filosofi_stats(x: float = 1.44193756295, y: float =  43.596, radius: float = Query(200, le=1000), epsg: int = 4326):
     hubblo = f"(st_buffer(ST_Transform(ST_Point({x}, {y}),'EPSG:{epsg}', 'EPSG:3035'), {radius}))"
     return {"message": duckdb.sql(query.format(hubblo, hubblo, agg, hubblo, epsg, agg_commune, epsg, hubblo)).df()}
